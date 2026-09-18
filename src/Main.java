@@ -14,12 +14,14 @@ public class Main {
         Camarero camarero = new Camarero("Carlos", "C01");
 
         Producto[] catalogo = {
-                new Bebida("Café", 1.80, "Bebida", "mediano"),
-                new Comida("Bocadillo", 3.50, "Comida", true),
-                new Bebida("Zumo", 2.20, "Bebida", "grande"),
-                new Producto("Galleta", 1.00, "Dulce"),
-                new Comida("Croissant", 1.70, "Comida", false)
+                new Bebida("Café", 1.80, "Bebida", 10, "mediano"),
+                new Comida("Bocadillo", 3.50, "Comida", 10, true),
+                new Bebida("Zumo", 2.20, "Bebida", 10,"grande"),
+                new Producto("Galleta", 1.00, "Dulce", 10),
+                new Comida("Croissant", 1.70, "Comida", 10,false)
         };
+
+        System.out.println(catalogo[1].mostrarInformacion());
 
         // Esta clase se encarga del archivo donde guardamos el historial.
         GestorTickets gestorTickets = new GestorTickets();
@@ -171,7 +173,10 @@ public class Main {
         }
 
         Producto productoElegido = catalogo[numeroProducto - 1];
-        boolean agregado = ticket.agregarProducto(productoElegido);
+
+        int cantidad = leerEntero(teclado, "Introduce cantidad: ");
+
+        boolean agregado = ticket.agregarProducto(productoElegido, cantidad);
 
         if (agregado) {
             System.out.println("Producto añadido correctamente: "

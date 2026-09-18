@@ -14,6 +14,7 @@ public class Ticket {
     private Cliente cliente;
     private Camarero camarero;
     private Producto[] productos;
+    private int[] cantidades;
     private int contadorProductos;
 
     /**
@@ -34,6 +35,7 @@ public class Ticket {
         }
 
         this.productos = new Producto[capacidadMaxima];
+        this.cantidades = new int[capacidadMaxima];
         this.contadorProductos = 0;
     }
 
@@ -70,8 +72,8 @@ public class Ticket {
      *
      * @return true si se añade correctamente; false en caso contrario
      */
-    public boolean agregarProducto(Producto producto) {
-        if (producto == null) {
+    public boolean agregarProducto(Producto producto, int cantidad) {
+        if (producto == null || cantidad == 0) {
             return false;
         }
 
@@ -81,6 +83,7 @@ public class Ticket {
         }
 
         productos[contadorProductos] = producto;
+        cantidades[contadorProductos] = cantidad;
         contadorProductos++;
         return true;
     }
@@ -93,7 +96,7 @@ public class Ticket {
         double total = 0;
 
         for (int i = 0; i < contadorProductos; i++) {
-            total += productos[i].getPrecio();
+            total += (productos[i].getPrecio() * (1+(productos[i].getIVA()/100)))* cantidades[i];
         }
 
         return total;
@@ -135,9 +138,20 @@ public class Ticket {
             texto.append("No hay productos en el ticket.\n");
         } else {
             for (int i = 0; i < contadorProductos; i++) {
+                double ivaLinea= (productos[i].getIVA()/100) * productos[i].getPrecio() * cantidades[i];
+                double totalLinea= (productos[i].getPrecio() * cantidades[i]) + ivaLinea;
                 texto.append(i + 1)
                         .append(". ")
                         .append(productos[i].mostrarInformacion())
+                        .append(" * ")
+                        .append(cantidades[i])
+                        .append(",  ")
+                        .append(productos[i].getIVA())
+                        .append("% ")
+                        .append(", " )
+                        .append(ivaLinea)
+                        .append(" = ")
+                        .append(String.format( "Total línea: %.2f €"  ,  totalLinea))
                         .append("\n");
             }
         }

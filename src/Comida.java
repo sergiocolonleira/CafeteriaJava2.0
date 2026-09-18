@@ -6,9 +6,10 @@ public class Comida extends Producto {
     // Atributo propio de la clase hija.
     private boolean esCaliente;
 
-    public Comida(String nombre, double precio, String categoria, boolean esCaliente) {
-        super(nombre, precio, categoria);
+    public Comida(String nombre, double precio, String categoria, double IVA, boolean esCaliente) {
+        super(nombre, precio, categoria, IVA);
         this.esCaliente = esCaliente;
+
     }
 
     public boolean isEsCaliente() {
@@ -25,7 +26,7 @@ public class Comida extends Producto {
     @Override
     public String mostrarInformacion() {
         String temperatura = esCaliente ? "caliente" : "frío";
-        return String.format("%s %s - %.2f €",
-                getNombre(), temperatura, getPrecio());
+        return String.format("%s %s - %.2f € - IVA: %.2f %%",
+                getNombre(), temperatura, getPrecio(), getIVA());
     }
 }

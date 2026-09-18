@@ -6,10 +6,11 @@ public class Bebida extends Producto {
     // Atributo propio de la clase hija.
     private String tamanio;
 
-    public Bebida(String nombre, double precio, String categoria, String tamanio) {
-        super(nombre, precio, categoria);
+    public Bebida(String nombre, double precio, String categoria, double IVA, String tamanio) {
+        super(nombre, precio, categoria, IVA);
         setTamanio(tamanio);
     }
+
 
     public String getTamanio() {
         return tamanio;
@@ -28,7 +29,7 @@ public class Bebida extends Producto {
      */
     @Override
     public String mostrarInformacion() {
-        return String.format("%s %s - %.2f €",
-                getNombre(), tamanio, getPrecio());
+        return   String.format("%s %s - %.2f € - IVA: %.2f %%",
+                getNombre(), tamanio, getPrecio(), getIVA());
     }
 }

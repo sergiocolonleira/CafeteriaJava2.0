@@ -10,3 +10,39 @@ Productos:
 Total: 5,30 €
 ==============================
 
+==============================
+       CAFETERÍA JAVA
+==============================
+Ticket nº: 1
+Cliente: Pepe
+Camarero: Carlos - Código: C01
+Productos:
+1. Café mediano - 1,80 €
+2. Bocadillo caliente - 3,50 €
+Total: 5,30 €
+==============================
+
+==============================
+       CAFETERÍA JAVA
+==============================
+Ticket nº: 2
+Cliente: Maria
+Camarero: Carlos - Código: C01
+Productos:
+1. Zumo grande - 2,20 €
+2. Croissant frío - 1,70 €
+Total: 3,90 €
+==============================
+
+==============================
+       CAFETERÍA JAVA
+==============================
+Ticket nº: 1
+Cliente: Pepe
+Camarero: Carlos - Código: C01
+Productos:
+1. Café mediano - 1,80 €
+2. Bocadillo caliente - 3,50 €
+Total: 5,30 €
+==============================
+

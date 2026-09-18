@@ -10,15 +10,21 @@ public class Producto implements Descontable {
     private String nombre;
     private double precio;
     private String categoria;
+    private double IVA;
+
 
     /**
      * Constructor completo de Producto.
      */
-    public Producto(String nombre, double precio, String categoria) {
+    public Producto(String nombre, double precio, String categoria, double IVA) {
         setNombre(nombre);
         setPrecio(precio);
         setCategoria(categoria);
+        setIVA(IVA);
+
     }
+
+
 
     public String getNombre() {
         return nombre;
@@ -33,6 +39,14 @@ public class Producto implements Descontable {
         } else {
             this.nombre = nombre.trim();
         }
+    }
+
+    public double getIVA() {
+        return IVA;
+    }
+
+    public void setIVA(double IVA) {
+        this.IVA = IVA;
     }
 
     public double getPrecio() {
@@ -67,8 +81,8 @@ public class Producto implements Descontable {
      * Las clases hijas sobrescriben este método con @Override.
      */
     public String mostrarInformacion() {
-        return String.format("%s - %.2f € - Categoría: %s",
-                nombre, precio, categoria);
+        return String.format("%s - %.2f € - Categoría: %s - Iva: %.2f",
+                nombre, precio, categoria, IVA);
     }
 
     /**
