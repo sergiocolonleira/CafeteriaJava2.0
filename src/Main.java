@@ -392,12 +392,12 @@ public class Main {
         primero.agregarProducto(catalogo[2], 1);
         primero.agregarProducto(catalogo[4], 3);
 
-        System.out.println("\n--- Antes de eliminar la galleta ---");
+        System.out.println("\n--- Antes de eliminar la filloa ---");
         primero.mostrarTicket();
 
         primero.eliminarProducto(catalogo[4]);
 
-        System.out.println("\n--- Después de eliminar la galleta ---");
+        System.out.println("\n--- Después de eliminar la filloa ---");
         primero.mostrarTicket();
 
         segundo.agregarProducto(catalogo[1], 1);
