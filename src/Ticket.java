@@ -1,42 +1,42 @@
+import java.util.ArrayList;
+
 /**
  * Representa una venta de la cafetería.
  *
- * Esta clase utiliza composición porque contiene un Cliente, un Camarero y
- * un array de objetos Producto.
+ * Guarda los productos y sus cantidades en dos listas.
+ * Cada producto tiene su cantidad en la misma posición
+ * de la lista de cantidades.
  */
 public class Ticket {
 
-    // Contador compartido por todos los tickets para generar números únicos
-    // dentro de cada ejecución del programa.
     private static int siguienteNumero = 1;
 
     private final int numeroTicket;
     private Cliente cliente;
     private Camarero camarero;
-    private Producto[] productos;
-    private int[] cantidades;
-    private int contadorProductos;
+
+    private final ArrayList<Producto> productos;
+    private final ArrayList<Integer> cantidades;
 
     /**
-     * Crea un ticket con una capacidad máxima de productos.
-     *
-     * @param cliente cliente asociado al ticket
-     * @param camarero camarero que atiende la venta
-     * @param capacidadMaxima tamaño del array de productos
+     * Crea un ticket vacío.
      */
-    public Ticket(Cliente cliente, Camarero camarero, int capacidadMaxima) {
+    public Ticket(Cliente cliente, Camarero camarero) {
         this.numeroTicket = siguienteNumero++;
         this.cliente = cliente;
         this.camarero = camarero;
+        this.productos = new ArrayList<>();
+        this.cantidades = new ArrayList<>();
+    }
 
-        // Validación mediante condicional: la capacidad mínima será 1.
-        if (capacidadMaxima <= 0) {
-            capacidadMaxima = 1;
-        }
-
-        this.productos = new Producto[capacidadMaxima];
-        this.cantidades = new int[capacidadMaxima];
-        this.contadorProductos = 0;
+    /**
+     * Conserva la compatibilidad con las llamadas de la EC1.
+     *
+     * La capacidad máxima ya no se utiliza porque las listas
+     * crecen al añadir elementos.
+     */
+    public Ticket(Cliente cliente, Camarero camarero, int capacidadMaxima) {
+        this(cliente, camarero);
     }
 
     public int getNumeroTicket() {
@@ -59,54 +59,89 @@ public class Ticket {
         this.camarero = camarero;
     }
 
-    public Producto[] getProductos() {
-        return productos;
+    /**
+     * Devuelve una copia de la lista para evitar modificaciones
+     * externas que descoordinen los productos y sus cantidades.
+     */
+    public ArrayList<Producto> getProductos() {
+        return new ArrayList<>(productos);
     }
 
-    public int getContadorProductos() {
-        return contadorProductos;
+    public ArrayList<Integer> getCantidades() {
+        return new ArrayList<>(cantidades);
     }
 
     /**
-     * Añade un producto al array si hay espacio disponible.
+     * Devuelve el número de líneas de productos del ticket,
+     * no la suma de sus unidades.
+     */
+    public int getContadorProductos() {
+        return productos.size();
+    }
+
+    /**
+     * Añade una línea con un producto y su cantidad.
      *
-     * @return true si se añade correctamente; false en caso contrario
+     * @return true si se añade; false si los datos no son válidos
      */
     public boolean agregarProducto(Producto producto, int cantidad) {
-        if (producto == null || cantidad == 0) {
+        if (producto == null || cantidad <= 0) {
             return false;
         }
 
-        if (contadorProductos >= productos.length) {
-            System.out.println("No se pueden añadir más productos al ticket.");
-            return false;
-        }
-
-        productos[contadorProductos] = producto;
-        cantidades[contadorProductos] = cantidad;
-        contadorProductos++;
+        productos.add(producto);
+        cantidades.add(cantidad);
         return true;
     }
 
     /**
-     * Recorre el array con un bucle y suma los precios de los productos
-     * realmente añadidos al ticket.
+     * Elimina una línea completa del ticket por su posición.
+     * Las posiciones empiezan en cero.
+     *
+     * @return true si se elimina; false si la posición no existe
+     */
+    public boolean eliminarProducto(int indice) {
+        if (indice < 0 || indice >= productos.size()) {
+            return false;
+        }
+
+        productos.remove(indice);
+        cantidades.remove(indice);
+        return true;
+    }
+
+    /**
+     * Elimina la primera línea que contiene el producto indicado,
+     * incluyendo todas las unidades de esa línea.
+     *
+     * @return true si se elimina; false si el producto no está
+     */
+    public boolean eliminarProducto(Producto producto) {
+        int indice = productos.indexOf(producto);
+        return eliminarProducto(indice);
+    }
+
+    /**
+     * Calcula el importe total con cantidades e IVA incluidos.
      */
     public double calcularTotal() {
         double total = 0;
 
-        for (int i = 0; i < contadorProductos; i++) {
-            total += (productos[i].getPrecio() * (1+(productos[i].getIVA()/100)))* cantidades[i];
+        for (int i = 0; i < productos.size(); i++) {
+            Producto producto = productos.get(i);
+            int cantidad = cantidades.get(i);
+
+            double baseLinea = producto.getPrecio() * cantidad;
+            double ivaLinea = baseLinea * producto.getIVA() / 100.0;
+
+            total += baseLinea + ivaLinea;
         }
 
         return total;
     }
 
     /**
-     * Devuelve el ticket completo como texto.
-     *
-     * Tener este método separado resulta útil porque el mismo texto se puede
-     * mostrar en consola y también guardar en un archivo.
+     * Genera el texto del ticket para mostrarlo o guardarlo.
      */
     public String generarTextoTicket() {
         StringBuilder texto = new StringBuilder();
@@ -117,7 +152,9 @@ public class Ticket {
         texto.append("Ticket nº: ").append(numeroTicket).append("\n");
 
         if (cliente != null) {
-            texto.append("Cliente: ").append(cliente.getNombre()).append("\n");
+            texto.append("Cliente: ")
+                    .append(cliente.getNombre())
+                    .append("\n");
         } else {
             texto.append("Cliente: no asignado\n");
         }
@@ -134,36 +171,41 @@ public class Ticket {
 
         texto.append("Productos:\n");
 
-        if (contadorProductos == 0) {
+        if (productos.isEmpty()) {
             texto.append("No hay productos en el ticket.\n");
         } else {
-            for (int i = 0; i < contadorProductos; i++) {
-                double ivaLinea= (productos[i].getIVA()/100) * productos[i].getPrecio() * cantidades[i];
-                double totalLinea= (productos[i].getPrecio() * cantidades[i]) + ivaLinea;
+            for (int i = 0; i < productos.size(); i++) {
+                Producto producto = productos.get(i);
+                int cantidad = cantidades.get(i);
+
+                double baseLinea = producto.getPrecio() * cantidad;
+                double ivaLinea = baseLinea * producto.getIVA() / 100.0;
+                double totalLinea = baseLinea + ivaLinea;
+
                 texto.append(i + 1)
                         .append(". ")
-                        .append(productos[i].mostrarInformacion())
+                        .append(producto.mostrarInformacion())
                         .append(" * ")
-                        .append(cantidades[i])
-                        .append(",  ")
-                        .append(productos[i].getIVA())
-                        .append("% ")
-                        .append(", " )
-                        .append(ivaLinea)
-                        .append(" = ")
-                        .append(String.format( "Total línea: %.2f €"  ,  totalLinea))
+                        .append(cantidad)
                         .append("\n");
+
+                texto.append(String.format(
+                        "   IVA de la línea: %.2f € | Total línea: %.2f €%n",
+                        ivaLinea, totalLinea
+                ));
             }
         }
 
-        texto.append(String.format("Total: %.2f €%n", calcularTotal()));
+        texto.append(String.format(
+                "Total: %.2f €%n", calcularTotal()
+        ));
         texto.append("==============================\n");
 
         return texto.toString();
     }
 
     /**
-     * Muestra por consola toda la información del ticket.
+     * Muestra el ticket por consola.
      */
     public void mostrarTicket() {
         System.out.print(generarTextoTicket());

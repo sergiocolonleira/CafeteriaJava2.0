@@ -1,38 +1,31 @@
 /**
  * Clase base que representa un producto de la cafetería.
  *
- * Implementa la interfaz Descontable para que cualquier producto pueda
- * calcular un precio rebajado.
+ * Implementa Descontable para calcular un precio rebajado.
  */
 public class Producto implements Descontable {
 
-    // Encapsulación: todos los atributos son privados.
     private String nombre;
     private double precio;
     private String categoria;
     private double IVA;
 
-
     /**
-     * Constructor completo de Producto.
+     * Crea un producto con nombre, precio, categoría e IVA.
+     *
+     * @throws IllegalArgumentException si el precio es negativo
      */
     public Producto(String nombre, double precio, String categoria, double IVA) {
         setNombre(nombre);
         setPrecio(precio);
         setCategoria(categoria);
         setIVA(IVA);
-
     }
-
-
 
     public String getNombre() {
         return nombre;
     }
 
-    /**
-     * Se valida que el nombre no sea nulo ni esté vacío.
-     */
     public void setNombre(String nombre) {
         if (nombre == null || nombre.isBlank()) {
             this.nombre = "Producto sin nombre";
@@ -41,27 +34,23 @@ public class Producto implements Descontable {
         }
     }
 
-    public double getIVA() {
-        return IVA;
-    }
-
-    public void setIVA(double IVA) {
-        this.IVA = IVA;
-    }
-
     public double getPrecio() {
         return precio;
     }
 
     /**
-     * No se permiten precios negativos.
+     * Establece el precio del producto.
+     *
+     * @throws IllegalArgumentException si el precio es negativo
      */
     public void setPrecio(double precio) {
         if (precio < 0) {
-            this.precio = 0;
-        } else {
-            this.precio = precio;
+            throw new IllegalArgumentException(
+                    "El precio del producto no puede ser negativo: " + precio
+            );
         }
+
+        this.precio = precio;
     }
 
     public String getCategoria() {
@@ -76,26 +65,31 @@ public class Producto implements Descontable {
         }
     }
 
-    /**
-     * Devuelve una cadena con la información básica del producto.
-     * Las clases hijas sobrescriben este método con @Override.
-     */
-    public String mostrarInformacion() {
-        return String.format("%s - %.2f € - Categoría: %s - Iva: %.2f",
-                nombre, precio, categoria, IVA);
+    public double getIVA() {
+        return IVA;
+    }
+
+    public void setIVA(double IVA) {
+        this.IVA = IVA;
     }
 
     /**
-     * Calcula el precio tras aplicar un descuento porcentual.
-     *
-     * El método NO modifica el precio original del producto; únicamente
-     * devuelve el precio resultante. Así se puede comparar el precio normal
-     * con el precio rebajado.
+     * Devuelve la información básica del producto.
+     */
+    public String mostrarInformacion() {
+        return String.format(
+                "%s | %.2f € | Categoría (%s) | IVA %.2f %%",
+                nombre, precio, categoria, IVA
+        );
+    }
+
+    /**
+     * Calcula el precio con descuento sin modificar el precio original.
+     * Si el porcentaje está fuera del rango 0-100, devuelve el precio original.
      */
     @Override
     public double aplicarDescuento(double porcentaje) {
         if (porcentaje < 0 || porcentaje > 100) {
-            // Si el porcentaje no es válido, se devuelve el precio original.
             return precio;
         }
 

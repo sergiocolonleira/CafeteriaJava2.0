@@ -1,0 +1,22 @@
+{
+  "numeroTicket": 1,
+  "cliente": "Andrea",
+  "camarero": "Sergio",
+  "productos": [
+    {
+      "nombre": "Café",
+      "precio": 1.8,
+      "cantidad": 2,
+      "iva": 10.0,
+      "totalLinea": 3.96
+    },
+    {
+      "nombre": "Churrasco",
+      "precio": 10.5,
+      "cantidad": 1,
+      "iva": 10.0,
+      "totalLinea": 11.55
+    }
+  ],
+  "total": 15.510000000000002
+}
